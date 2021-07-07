@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SignIn Page</title>
+</head>
+<body>
+<h1>SignIn Page</h1>
+    {% if message %}
+    <h1>{{ message }}</h1>
+    {% endif %}
+    <fieldset>
+        <form method = 'POST' action = '{% url "signin" %}'>
+            {% csrf_token %}
+            <table>
+                <tr>
+                    <td>Username :</td>
+                    <td><input type = 'text' name = 'username' id = 'username' autocomplete="off" required></td>
+                </tr>
+                <tr>
+                    <td>Password :</td>
+                    <td><input type = 'password' name = 'password' id = 'password' autocomplete="off" required></td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="submit" value = "Sign In" id = "signin">
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </fieldset>
+    <a href = '{% url "signup" %}'>Not a member? Register Here</a><br><br>
+</body>
+</html>

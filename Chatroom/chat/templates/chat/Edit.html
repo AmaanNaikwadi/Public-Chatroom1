@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Details</title>
+     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<h1>Edit Details</h1>
+<fieldset>
+        <form method = 'POST' action = '{% url "edit" %}'>
+            {% csrf_token %}
+            <table>
+                <tr>
+                    <td><div id='message1'></div></td>
+                </tr>
+                <tr>
+                    <td>First Name :</td>
+                    <td><input type = 'text' name = 'first_name' id = 'first_name' autocomplete="off" required></td>
+                </tr>
+                <tr>
+                    <td><div id='message2'></div></td>
+                </tr>
+                <tr>
+                <td>Last Name :</td>
+                    <td><input type = 'text' name = 'last_name' id = 'last_name' autocomplete="off" required></td>
+                </tr>
+                <tr>
+                    <td><div id='message3'></div></td>
+                </tr>
+                <tr>
+                    <td>Email :</td>
+                    <td><input type = 'email' name = 'email' id = 'email' autocomplete="off" required></td>
+                </tr>
+            </table>
+            <input type = 'submit' value = 'Submit' name = 'Submit' id = 'submit'>
+        </form>
+    </fieldset>
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+            $("input#first_name").keyup(function() {
+                if ($(this).val().match('^[a-zA-Z]{0,16}$')) {
+                    $('#message2').html("");
+                    $('#submit').prop("disabled", false);
+                } else {
+                $('#message2').html("<h10 style='color:red;'>Enter a valid First name.</h10>");
+                $('#submit').prop("disabled", true);
+            }
+        });
+            $('input#last_name').keyup(function() {
+                if ( $(this).val().match('^[a-zA-Z]{0,16}$') ) {
+                    $('#message3').html("");
+                    $('#submit').prop("disabled", false);
+                } else {
+                $('#message3').html("<h10 style='color:red;'>Enter a valid Last name.</h10>");
+                $('#submit').prop("disabled", true);
+            }
+        });
+    });
+    </script>
+</body>
+</html>

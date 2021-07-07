@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home Page</title>
+</head>
+<body>
+<h1>Home Page</h1>
+{% if message %}
+<h1> {{message }}</h1>
+{% endif %}
+<table>
+    <tr>
+        <td>
+            <form method = "GET" action = '{% url "edit" %}'>
+                {% csrf_token %}
+                <input type="submit" value = "Edit Details" id = "edit"><br><br>
+            </form>
+        </td>
+    </tr>
+     <tr>
+        <td>
+            <form method = "POST" action = '{% url "home" %}'>
+                {% csrf_token %}
+                <input type="submit" value = "Go to Chatroom" id = "chatroom"><br><br>
+            </form>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <form method = "POST" action = '{% url "logout" %}'>
+                {% csrf_token %}
+                <input type="submit" value = "Logout" id = "logout">
+            </form>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
