@@ -68,6 +68,8 @@ def home(request):
             return render(request, 'chat/Home.html')
         else:
             return redirect('signin')
+    else:
+        return HttpResponseRedirect('room')
 
 
 def edit(request):
