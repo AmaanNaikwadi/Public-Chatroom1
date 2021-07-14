@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Personal</title>
+</head>
+<body>
+<h1>Personal Chat</h1>
+{% if message %}
+    <h3>{{message}}</h3>
+{% endif %}
+<fieldset>
+<form method = "POST" action = '{% url "personal" %}'>
+    {% csrf_token %}
+    <h3>Enter the username of the person to chat with :: </h3>
+     Username : <input type = "text" name = "username" id = "username"><br><br>
+    <input type = "submit" name = "submit" value="Submit">
+</form>
+</fieldset>
+
+</body>
+</html>

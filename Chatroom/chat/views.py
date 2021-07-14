@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import User, auth
 from django.http import JsonResponse
+from django.contrib.auth.models import User, auth
+from .models import Thread, Profile
 import re
 from django.http import HttpResponse, HttpResponseRedirect
 #import requests
@@ -27,6 +28,8 @@ def signup(request):
                 user = User.objects.create_user(username=username, first_name=first_name, last_name=last_name,
                                                 email=email, password=f_pass)
                 user.save()
+                profile = Profile(user=user, profile_pic='avatar2.png')
+                profile.save()
                 auth.login(request, user)
                 return redirect('home')
 
@@ -65,11 +68,17 @@ def logout(request):
 def home(request):
     if request.method == "GET":
         if request.user.is_authenticated:
-            return render(request, 'chat/Home.html')
+            username = request.user.username
+            user = User.objects.get(username=username)
+            return render(request, 'chat/Home.html', {'user': user})
         else:
             return redirect('signin')
     else:
-        return HttpResponseRedirect('room')
+        chat_type = request.POST.get("type")
+        if chat_type == "Go to Chatroom":
+            return HttpResponseRedirect('room')
+        else:
+            return redirect('personal')
 
 
 def edit(request):
@@ -83,6 +92,7 @@ def edit(request):
         first_name = request.POST.get("first_name")
         last_name = request.POST.get("last_name")
         email = request.POST.get("email")
+        profile_pic = request.POST.get("image")
         username1 = request.user.username
         user = User.objects.get(username=username1)
         user.username = username
@@ -90,8 +100,29 @@ def edit(request):
         user.last_name = last_name
         user.email = email
         user.save(update_fields=['first_name', 'last_name', 'email'])
+        profile = Profile.objects.get(user=user)
+        uploaded_file = request.FILES['image']
+        profile.profile_pic = uploaded_file
+        profile.save(update_fields=['profile_pic'])
         return redirect('home')
 
 
+def personal(request):
+    if request.method == "GET":
+        return render(request, 'chat/personal.html')
+    else:
+        username = request.POST.get('username')
+        try:
+            user = User.objects.get(username=username)
+            return HttpResponseRedirect(username)
+        except User.DoesNotExist:
+            return render(request, 'chat/personal.html', {'message' : "The Username does not exist."})
+
+
 def room(request, room_name):
+    print(room_name)
     return render(request, 'chat/chatroom.html', {'room_name': room_name})
+
+
+def personalchat(request, username):
+    return render(request, 'chat/personalchat.html', {'username': username})

@@ -8,7 +8,7 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
-    <title>Chatroom</title>
+    <title>Personal Chat</title>
   </head>
   <body>
 
@@ -28,33 +28,40 @@
             </div>
         </div>
     </div>
-   {{ request.user.username|json_script:"user_username" }}
-  {{ room_name|json_script:"room-name" }}
+    {{ request.user.username|json_script:"login_username" }}
+    {{ username|json_script:"username" }}
     <script>
-        const user_username = JSON.parse(document.getElementById('user_username').textContent);
-        const roomName = JSON.parse(document.getElementById('room-name').textContent);
+        const login_username = JSON.parse(document.getElementById('login_username').textContent);
+        const username = JSON.parse(document.getElementById('username').textContent);
+        //The 'username' above is recorded for the url.
 
         document.querySelector('#submit').onclick = function(e) {
             const messageInputDom = document.querySelector('#input');
             const message = messageInputDom.value;
             chatSocket.send(JSON.stringify({
                 'message': message,
-                'username': user_username,
+                'username': login_username,
             }));
             messageInputDom.value = '';
         };
+        //The 'login_username' used above is assigned in line 31. The 'login_username' is used to record which user is sending the message so we can append it while displaying.
+        //The 'username' is JSON.stringify is used to send it to chat socket
 
         const chatSocket = new WebSocket (
             'ws://' +
             window.location.host +
-            '/Home/ws/chat/'
+            '/Personal/ws/'+
+            username +
+            '/'
         );
+        //The 'username' used in above url is the one to whom we have to send message.
 
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
             console.log(data);
-            document.querySelector('#chat-text').value += (data.username + ' : ' + data.message + '\n')
+            document.querySelector('#chat-text').value += ('('+data.time+') '+data.username + ' : ' + data.message + '\n');
         }
+        //The 'data.username' used above is from the json returned from consumer.py and is used to show which user has send the message.
     </script>
 
 

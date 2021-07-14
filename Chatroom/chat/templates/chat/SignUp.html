@@ -11,7 +11,7 @@
     <h1>{{ message }}</h1>
     {% endif %}
     <fieldset>
-        <form method = 'POST' action = '{% url "signup" %}'>
+        <form method = 'POST' action = '{% url "signup" %}' enctype="multipart/form-data">
             {% csrf_token %}
             <table>
                 <tr>

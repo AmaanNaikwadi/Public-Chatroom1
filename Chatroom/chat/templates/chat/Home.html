@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,20 +10,63 @@
 {% if message %}
 <h1> {{message }}</h1>
 {% endif %}
-<table>
-    <tr>
-        <td>
-            <form method = "GET" action = '{% url "edit" %}'>
-                {% csrf_token %}
-                <input type="submit" value = "Edit Details" id = "edit"><br><br>
-            </form>
-        </td>
-    </tr>
+<fieldset>
+    <table>
+        <tr>
+            <td>
+                Profile Pic :
+            </td>
+            <td>
+                  {% if user.profile.profile_pic %}
+                      <img src="{{ user.profile.profile_pic.url }}" width="240px">
+                  {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Username :
+            </td>
+            <td>
+                {{ user.username }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                First Name :
+            </td>
+            <td>
+                {{ user.first_name }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Last Name :
+            </td>
+            <td>
+                {{ user.last_name }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Email :
+            </td>
+            <td>
+                {{ user.email }}
+            </td>
+        </tr>
+    </table>
+    <br>
+    <form method = "GET" action = '{% url "edit" %}'>
+                    {% csrf_token %}
+                    <input type="submit" value = "Edit Details" id = "edit"><br><br>
+                </form>
+    <table>
      <tr>
         <td>
             <form method = "POST" action = '{% url "home" %}'>
                 {% csrf_token %}
-                <input type="submit" value = "Go to Chatroom" id = "chatroom"><br><br>
+                <input type="submit" value = "Go to Chatroom" name="type"><br><br>
+                <input type="submit" value = "Personal Chat" name="type"><br><br>
             </form>
         </td>
     </tr>
@@ -34,6 +78,8 @@
             </form>
         </td>
     </tr>
-</table>
+    </table>
+</fieldset>
+
 </body>
 </html>

@@ -8,7 +8,7 @@
 <body>
 <h1>Edit Details</h1>
 <fieldset>
-        <form method = 'POST' action = '{% url "edit" %}'>
+        <form method = 'POST' action = '{% url "edit" %}' enctype="multipart/form-data">
             {% csrf_token %}
             <table>
                 <tr>
@@ -31,6 +31,10 @@
                 <tr>
                     <td>Email :</td>
                     <td><input type = 'email' name = 'email' id = 'email' autocomplete="off" required></td>
+                </tr>
+                <tr>
+                    <td>Profile Picture :</td>
+                    <td><input type = 'file' name = 'image' id = 'image' autocomplete="off" ></td>
                 </tr>
             </table>
             <input type = 'submit' value = 'Submit' name = 'Submit' id = 'submit'>
