@@ -17,7 +17,8 @@
             <div class="col-6">
                 <form>
                     <div class="form-group">
-                        <label for="exampleFormControlTextarea1" class="h4 pt-5">Chatroom</label>
+                        <label for="exampleFormControlTextarea1" class="h4 pt-5">{{username}}</label>
+                        <p id = 'status'></p>
                         <textarea class="form-control" id="chat-text" rows="10"></textarea><br>
                     </div>
                     <div class="form-group">
@@ -58,8 +59,18 @@
 
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
+            let x = data.number_people
             console.log(data);
+            console.log(x);
             document.querySelector('#chat-text').value += ('('+data.time+') '+data.username + ' : ' + data.message + '\n');
+            if (x == 1) {
+                console.log(event.number_people);
+                document.getElementById('status').innerHTML = '(Offline)';
+            }
+            else if (x == 2) {
+                console.log(event.number_people);
+                document.getElementById('status').innerHTML = '(Online)';
+            }
         }
         //The 'data.username' used above is from the json returned from consumer.py and is used to show which user has send the message.
     </script>

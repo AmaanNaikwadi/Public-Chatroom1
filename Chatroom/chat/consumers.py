@@ -60,14 +60,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
         thread.chat += '(' + str(current_time) + ')' + str(username) + ' : ' + str(message) + '\n'
         thread.save()
 
-
         await self.channel_layer.group_send(
             self.room_group_name,
             {
                 'type': 'personal_message',
                 'message': message,
                 'username': username,
-                'time': str(current_time)
+                'time': str(current_time),
+                'number_people': len(self.channel_layer.groups.get(self.room_group_name, {}).items()),
             }
         )
 
@@ -75,10 +75,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
         message = event['message']
         username = event['username']
         time = event['time']
+        number_people = event['number_people']
         await self.send(text_data=json.dumps({
             'message': message,
             'username': username,
             'time': time,
+            'number_people': number_people,
         }))
 
 
