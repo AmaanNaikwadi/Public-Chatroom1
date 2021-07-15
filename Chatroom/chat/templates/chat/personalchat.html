@@ -19,16 +19,28 @@
                     <div class="form-group">
                         <label for="exampleFormControlTextarea1" class="h4 pt-5">{{username}}</label>
                         <p id = 'status'></p>
-                        <textarea class="form-control" id="chat-text" rows="10"></textarea><br>
+                        {% if thread %}
+                        <pre><span style="font-family: Arial; font-size: 15px;">
+                        {{ thread }}
+                        </span></pre>
+                        {% endif %}
+                        <ul style="list-style-type:none" id = "message-list">
+                        </ul>
+                       <br>
                     </div>
                     <div class="form-group">
-                        <input class="form-control" id="input" type="text" autocomplete="off"></br>
+                        <input class="form-control" id="input" type="text" autocomplete="off" required></br>
                     </div>
                     <input class="btn btn-secondary btn-lg btn-block" id="submit" type="button" value="Send">
                 </form>
             </div>
         </div>
     </div>
+    <form enctype="multipart/form-data">
+        <input type="file" name="image" id="image" autocomplete="off">
+        <input type="submit" name="submit2" id="submit2" value="Submit">
+    </form>
+
     {{ request.user.username|json_script:"login_username" }}
     {{ username|json_script:"username" }}
     <script>
@@ -48,6 +60,7 @@
         //The 'login_username' used above is assigned in line 31. The 'login_username' is used to record which user is sending the message so we can append it while displaying.
         //The 'username' is JSON.stringify is used to send it to chat socket
 
+
         const chatSocket = new WebSocket (
             'ws://' +
             window.location.host +
@@ -61,14 +74,22 @@
             const data = JSON.parse(e.data);
             let x = data.number_people
             console.log(data);
-            console.log(x);
-            document.querySelector('#chat-text').value += ('('+data.time+') '+data.username + ' : ' + data.message + '\n');
+            const ul = document.getElementById("message-list")
+            var li = document.createElement('li');
+            li.append(document.createTextNode('('+data.time+') '+data.username + ' : ' + data.message + '\n'))
+            if (data.username == login_username) {
+                li.style.textAlign = "right";
+                ul.append(li);
+            }
+            else {
+                li.style.textAlign = "left";
+                ul.append(li);
+            }
+            //document.querySelector('#chat-text').value += ('('+data.time+') '+data.username + ' : ' + data.message + '\n');
             if (x == 1) {
-                console.log(event.number_people);
                 document.getElementById('status').innerHTML = '(Offline)';
             }
             else if (x == 2) {
-                console.log(event.number_people);
                 document.getElementById('status').innerHTML = '(Online)';
             }
         }

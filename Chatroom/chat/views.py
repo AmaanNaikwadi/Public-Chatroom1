@@ -125,4 +125,12 @@ def room(request, room_name):
 
 
 def personalchat(request, username):
-    return render(request, 'chat/personalchat.html', {'username': username})
+    try:
+        thread = Thread.objects.get(user1=request.user.username, user2=username)
+        return render(request, 'chat/personalchat.html', {'thread': thread.chat, 'username': username})
+    except Thread.DoesNotExist:
+        try:
+            thread = Thread.objects.get(user1=username, user2=request.user.username)
+            return render(request, 'chat/personalchat.html', {'thread': thread.chat, 'username': username})
+        except Thread.DoesNotExist:
+            return render(request, 'chat/personalchat.html', {'username': username})
