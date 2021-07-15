@@ -2,8 +2,8 @@ from django.shortcuts import render
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.contrib.auth.models import User, auth
-from .models import Thread, Profile
-import re
+from .models import Thread, Profile, Photo
+import re, json
 from django.http import HttpResponse, HttpResponseRedirect
 #import requests
 
@@ -134,3 +134,15 @@ def personalchat(request, username):
             return render(request, 'chat/personalchat.html', {'thread': thread.chat, 'username': username})
         except Thread.DoesNotExist:
             return render(request, 'chat/personalchat.html', {'username': username})
+
+
+def upload(request, username):
+    if request.method == 'POST':
+        if request.is_ajax():
+            image = request.FILES.get('img')
+            uploaded_image = Photo(img=image)
+            uploaded_image.save()
+            response_data = {
+                'url': uploaded_image.img.url,
+            }
+    return JsonResponse(response_data)

@@ -12,6 +12,7 @@ urlpatterns = [path('', views.signup, name='signup'),
                path('Home/<str:room_name>/', views.room, name='room'),
                path('Personal/', views.personal, name='personal'),
                path('Personal/<str:username>/', views.personalchat, name='personalchat'),
+               path('Personal/<str:username>/upload/', views.upload, name='upload'),
                ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

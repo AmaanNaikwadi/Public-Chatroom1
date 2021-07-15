@@ -7,7 +7,7 @@
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-
+     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <title>Personal Chat</title>
   </head>
   <body>
@@ -16,13 +16,14 @@
         <div class="row d-flex justify-content-center">
             <div class="col-6">
                 <form>
+                    {% csrf_token %}
                     <div class="form-group">
                         <label for="exampleFormControlTextarea1" class="h4 pt-5">{{username}}</label>
                         <p id = 'status'></p>
                         {% if thread %}
-                        <pre><span style="font-family: Arial; font-size: 15px;">
+                        <pre style="align: left; font-family: Arial; font-size: 15px;">
                         {{ thread }}
-                        </span></pre>
+                        </pre>
                         {% endif %}
                         <ul style="list-style-type:none" id = "message-list">
                         </ul>
@@ -32,17 +33,20 @@
                         <input class="form-control" id="input" type="text" autocomplete="off" required></br>
                     </div>
                     <input class="btn btn-secondary btn-lg btn-block" id="submit" type="button" value="Send">
+                </form><br><br>
+                 <form method="POST" id="ajax"  enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="file" name="img" id="img" autocomplete="off">
+                    <input type="submit" name="submit2" id="submit2" value="Submit">
                 </form>
             </div>
         </div>
     </div>
-    <!--form enctype="multipart/form-data">
-        <input type="file" name="image" id="image" autocomplete="off">
-        <input type="submit" name="submit2" id="submit2" value="Submit">
-    </form-->
+
 
     {{ request.user.username|json_script:"login_username" }}
     {{ username|json_script:"username" }}
+
     <script>
         const login_username = JSON.parse(document.getElementById('login_username').textContent);
         const username = JSON.parse(document.getElementById('username').textContent);
@@ -54,11 +58,39 @@
             chatSocket.send(JSON.stringify({
                 'message': message,
                 'username': login_username,
+                'image': 0,
             }));
             messageInputDom.value = '';
         };
         //The 'login_username' used above is assigned in line 31. The 'login_username' is used to record which user is sending the message so we can append it while displaying.
         //The 'username' is JSON.stringify is used to send it to chat socket
+
+
+
+        $(document).ready(function() {
+            $('#ajax').submit(function(e) {
+                e.preventDefault();
+                var data = new FormData($('#ajax').get(0));
+                console.log(data);
+
+                $.ajax({
+                   url: 'upload/',
+                   type: 'POST',
+                   data: data,
+                   processData: false,
+                   contentType: false,
+                   success: function(data) {
+                       console.log(data.url);
+                       chatSocket.send(JSON.stringify({
+                        'message': data.url,
+                        'username': login_username,
+                        'image': 1,
+                       }));
+                    }
+                });
+            });
+           });
+
 
 
         const chatSocket = new WebSocket (
@@ -76,15 +108,35 @@
             console.log(data);
             const ul = document.getElementById("message-list")
             var li = document.createElement('li');
-            li.append(document.createTextNode('('+data.time+') '+data.username + ' : ' + data.message + '\n'))
-            if (data.username == login_username) {
-                li.style.textAlign = "right";
-                ul.append(li);
+            if (data.image == 0) {
+                if (data.username == login_username) {
+                    li.append(document.createTextNode('('+data.time+') '+data.username + ' : ' + data.message + '\n'))
+                    li.style.textAlign = "right";
+                    ul.append(li);
+                }
+                else {
+                    li.append(document.createTextNode('('+data.time+') '+data.username + ' : ' + data.message + '\n'))
+                    li.style.textAlign = "left";
+                    ul.append(li);
+                }
             }
             else {
-                li.style.textAlign = "left";
-                ul.append(li);
+                var img = document.createElement('img');
+                img.src = data.message;
+                img.style.height = '300px';
+                img.style.width = '300px';
+                if (data.username == login_username) {
+                    li.append(img);
+                    li.style.textAlign = "right";
+                    ul.append(li);
+                }
+                else {
+                    li.append(img);
+                    li.style.textAlign = "left";
+                    ul.append(li);
+                }
             }
+
             //document.querySelector('#chat-text').value += ('('+data.time+') '+data.username + ' : ' + data.message + '\n');
             if (x == 1) {
                 document.getElementById('status').innerHTML = '(Offline)';

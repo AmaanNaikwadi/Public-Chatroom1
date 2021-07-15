@@ -45,6 +45,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
         username = text_data_json['username']
         message = text_data_json['message']
+        image = text_data_json['image']
 
         me = self.scope['user']
         other_username = self.scope['url_route']['kwargs']['username']
@@ -68,6 +69,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'username': username,
                 'time': str(current_time),
                 'number_people': len(self.channel_layer.groups.get(self.room_group_name, {}).items()),
+                'image': image,
             }
         )
 
@@ -76,11 +78,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
         username = event['username']
         time = event['time']
         number_people = event['number_people']
+        image = event['image']
         await self.send(text_data=json.dumps({
             'message': message,
             'username': username,
             'time': time,
             'number_people': number_people,
+            'image': image,
         }))
 
 

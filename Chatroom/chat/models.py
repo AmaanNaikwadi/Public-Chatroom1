@@ -10,6 +10,10 @@ class Profile(models.Model):
         return self.user.username
 
 
+class Photo(models.Model):
+    img = models.ImageField(null=True, blank=True)
+
+
 class Thread(models.Model):
 
     user1 = models.CharField(max_length=50)
