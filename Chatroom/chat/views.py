@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.contrib.auth.models import User, auth
-from .models import Thread, Profile, Photo
+from .models import Thread, Profile, Photo, GroupThread
 import re, json
 from django.http import HttpResponse, HttpResponseRedirect
 #import requests
@@ -120,8 +120,11 @@ def personal(request):
 
 
 def room(request, room_name):
-    print(room_name)
-    return render(request, 'chat/chatroom.html', {'room_name': room_name})
+    try:
+        gthread = GroupThread.objects.get(name=room_name)
+        return render(request, 'chat/chatroom.html', {'thread': gthread.chat, 'room_name': room_name})
+    except GroupThread.DoesNotExist:
+        return render(request, 'chat/chatroom.html', {'room_name': room_name})
 
 
 def personalchat(request, username):

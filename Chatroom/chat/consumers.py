@@ -1,6 +1,6 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.contrib.auth.models import User, auth
-from chat.models import Thread
+from chat.models import Thread, GroupThread
 from datetime import datetime, timedelta
 import json
 import os
@@ -91,8 +91,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
 class ChatRoomConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
-        self.room_name = 'chat'
+        self.room_name = 'room'
         self.room_group_name = 'chat_%s' % self.room_name
+
+        try:
+            gthread = GroupThread.objects.get(name=self.room_name)
+        except GroupThread.DoesNotExist:
+            gthread = GroupThread(name=self.room_name)
+            gthread.save()
 
         await self.channel_layer.group_add(
             self.room_group_name,
@@ -111,6 +117,10 @@ class ChatRoomConsumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
         username = text_data_json['username']
+
+        gthread = GroupThread.objects.get(name=self.room_name)
+        gthread.chat += str(username) + ' : ' + str(message) + '\n'
+        gthread.save()
 
         await self.channel_layer.group_send(
             self.room_group_name,

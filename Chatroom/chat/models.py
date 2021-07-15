@@ -22,3 +22,12 @@ class Thread(models.Model):
 
     def __str__(self):
         return str(self.user1)+" "+str(self.user2)
+
+
+class GroupThread(models.Model):
+
+    name = models.CharField(max_length=50)
+    chat = models.TextField()
+
+    def __str__(self):
+        return self.name
