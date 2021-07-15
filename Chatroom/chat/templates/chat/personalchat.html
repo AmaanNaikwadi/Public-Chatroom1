@@ -36,10 +36,10 @@
             </div>
         </div>
     </div>
-    <form enctype="multipart/form-data">
+    <!--form enctype="multipart/form-data">
         <input type="file" name="image" id="image" autocomplete="off">
         <input type="submit" name="submit2" id="submit2" value="Submit">
-    </form>
+    </form-->
 
     {{ request.user.username|json_script:"login_username" }}
     {{ username|json_script:"username" }}
