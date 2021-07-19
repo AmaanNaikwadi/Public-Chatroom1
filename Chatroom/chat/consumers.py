@@ -1,6 +1,6 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.contrib.auth.models import User, auth
-from chat.models import Thread, GroupThread
+from chat.models import Thread, GroupThread, Message
 from datetime import datetime, timedelta
 import json
 import os
