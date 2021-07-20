@@ -1,6 +1,6 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.contrib.auth.models import User, auth
-from chat.models import Thread, GroupThread, Message
+from chat.models import Thread, GroupThread
 from datetime import datetime, timedelta
 import json
 import os
@@ -84,6 +84,67 @@ class ChatConsumer(AsyncWebsocketConsumer):
             'username': username,
             'time': time,
             'number_people': number_people,
+            'image': image,
+        }))
+
+
+class GroupChatConsumer(AsyncWebsocketConsumer):
+
+    async def connect(self):
+        self.room_name = self.scope['url_route']['kwargs']['group_name']
+        self.room_group_name = 'chat_%s' % self.room_name
+
+        try:
+            gthread = GroupThread.objects.get(name=self.room_name)
+        except GroupThread.DoesNotExist:
+            gthread = GroupThread(name=self.room_name)
+            gthread.save()
+
+        await self.channel_layer.group_add(
+            self.room_group_name,
+            self.channel_name,
+        )
+
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        await self.channel_layer.group_discard(
+            self.room_group_name,
+            self.channel_name
+        )
+
+    async def receive(self, text_data):
+        text_data_json = json.loads(text_data)
+        message = text_data_json['message']
+        username = text_data_json['username']
+        image = text_data_json['image']
+
+        gthread = GroupThread.objects.get(name=self.room_name)
+        now = datetime.now()
+        current_time = now.strftime("%H:%M:%S")
+        gthread.chat += '(' + str(current_time) + ')' + str(username) + ' : ' + str(message) + '\n'
+        gthread.save()
+
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                'type': 'group_message',
+                'message': message,
+                'username': username,
+                'time': str(current_time),
+                'image': image,
+            }
+        )
+
+    async def group_message(self, event):
+        message = event['message']
+        username = event['username']
+        time = event['time']
+        image = event['image']
+        await self.send(text_data=json.dumps({
+            'message': message,
+            'username': username,
+            'time': time,
             'image': image,
         }))
 

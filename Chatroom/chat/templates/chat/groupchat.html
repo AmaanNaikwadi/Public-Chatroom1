@@ -8,7 +8,7 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
      <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <title>Personal Chat</title>
+    <title>Group Chat</title>
   </head>
   <body>
 
@@ -18,11 +18,11 @@
                 <form>
                     {% csrf_token %}
                     <div class="form-group">
-                        <label for="exampleFormControlTextarea1" class="h4 pt-5">{{username}}</label>
+                        <label for="exampleFormControlTextarea1" class="h4 pt-5">{{group_name}}</label>
                         <p id = 'status'></p>
-                        {% if thread %}
+                        {% if gthread %}
                         <pre style="align: left; font-family: Arial; font-size: 15px;">
-                        {{ thread }}
+                        {{ gthread }}
                         </pre>
                         {% endif %}
                         <ul style="list-style-type:none" id = "message-list">
@@ -38,6 +38,16 @@
                     {% csrf_token %}
                     <input type="file" name="img" id="img" autocomplete="off">
                     <input type="submit" name="submit2" id="submit2" value="Submit">
+                </form><br><br>
+                <form method="POST" id="ajax_add_member">
+                    {% csrf_token %}
+                    <input type="text" name="username" id="username" autocomplete="off">
+                    <input type="submit" name="submit3" id="submit3" value="Add Member">
+                    <div id='message1'></div>
+                </form><br><br>
+                <form method = "POST" action = '{% url "leave_group" %}'>
+                    {% csrf_token %}
+                    <button type="submit" name="group_name" value={{group_name}} >Leave Group</button><br><br>
                 </form>
             </div>
         </div>
@@ -45,19 +55,19 @@
 
 
     {{ request.user.username|json_script:"login_username" }}
-    {{ username|json_script:"username" }}
+    {{ group_name|json_script:"group_name" }}
 
     <script>
         const login_username = JSON.parse(document.getElementById('login_username').textContent);
-        const username = JSON.parse(document.getElementById('username').textContent);
+        const group_name = JSON.parse(document.getElementById('group_name').textContent);
         //The 'username' above is recorded for the url.
 
 
          const chatSocket = new WebSocket (
             'ws://' +
             window.location.host +
-            '/Personal/ws/'+
-            username +
+            '/groupjoin/ws/'+
+            group_name +
             '/'
         );
         //The 'username' used in above url is the one to whom we have to send message.
@@ -84,7 +94,7 @@
                 console.log(data);
 
                 $.ajax({
-                   url: 'upload/',
+                   url: 'group_upload/',
                    type: 'POST',
                    data: data,
                    processData: false,
@@ -99,12 +109,37 @@
                     }
                 });
             });
+
+           });
+
+
+           $(document).ready(function() {
+            $('#ajax_add_member').submit(function(e) {
+                console.log("Inside ajax");
+                e.preventDefault();
+                const username_to_add = document.querySelector('#username');
+                const username_to_send = username_to_add.value;
+
+                $.ajax({
+                   url: 'add_member/',
+                   method: 'GET',
+                   dataType: 'json',
+                   data: {
+                    'username': username_to_send
+                   },
+                   success: function(data, username) {
+                       console.log(data.message);
+                       document.getElementById("message1").innerHTML = data.message;
+                    }
+                });
+                username_to_add.value = '';
+            });
+
            });
 
 
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
-            let x = data.number_people
             console.log(data);
             const ul = document.getElementById("message-list")
             var li = document.createElement('li');
@@ -121,6 +156,18 @@
                 }
             }
             else {
+                if (data.username == login_username) {
+                    var li1 = document.createElement('li');
+                    li1.append(document.createTextNode('('+data.time+') '+data.username + ' : ' + '\n'))
+                    li1.style.textAlign = "right";
+                    ul.append(li1);
+                }
+                else {
+                    var li1 = document.createElement('li');
+                    li1.append(document.createTextNode('('+data.time+') '+data.username + ' : ' + '\n'))
+                    li1.style.textAlign = "left";
+                    ul.append(li1);
+                }
                 var img = document.createElement('img');
                 img.src = data.message;
                 img.style.height = '300px';
@@ -136,14 +183,7 @@
                     ul.append(li);
                 }
             }
-
             //document.querySelector('#chat-text').value += ('('+data.time+') '+data.username + ' : ' + data.message + '\n');
-            if (x == 1) {
-                document.getElementById('status').innerHTML = '(Offline)';
-            }
-            else if (x == 2) {
-                document.getElementById('status').innerHTML = '(Online)';
-            }
         }
         //The 'data.username' used above is from the json returned from consumer.py and is used to show which user has send the message.
     </script>

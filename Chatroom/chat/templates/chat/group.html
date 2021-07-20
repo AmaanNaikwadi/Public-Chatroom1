@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Group</title>
+</head>
+<body>
+<fieldset>
+    <h1>Group</h1>
+    {% if message %}
+    <h3> {{ message }} </h3>
+    {% endif %}
+    <table>
+        <form method="POST" action = '{% url "group" %}'>
+            {% csrf_token %}
+            <tr>
+                <td>
+                    <h3>Enter the group name you wish to join :: </h3>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="text" name = "Group_name_1" autocomplete="off"><br><br>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="submit" value = "Join Group" name="type">
+                </td>
+            </tr>
+        </form>
+    </table>
+    <table>
+        <form method="POST" action = '{% url "group" %}'>
+            {% csrf_token %}
+            <tr>
+                <td>
+                    <h3>Create Group :: </h3>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="text" name = "Group_name_2" autocomplete="off" ><br><br>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="submit" value = "Create Group" name="type" >
+                </td>
+            </tr>
+        </form>
+    </table>
+</fieldset>
+
+</body>
+</html>

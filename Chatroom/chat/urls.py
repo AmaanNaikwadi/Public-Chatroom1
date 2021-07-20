@@ -13,6 +13,12 @@ urlpatterns = [path('', views.signup, name='signup'),
                path('Personal/', views.personal, name='personal'),
                path('Personal/<str:username>/', views.personalchat, name='personalchat'),
                path('Personal/<str:username>/upload/', views.upload, name='upload'),
+               path('group/', views.group, name='group'),
+               path('groupjoin/', views.groupjoin, name='groupjoin'),
+               path('groupjoin/<str:group_name>/', views.groupchat, name='groupchat'),
+               path('groupjoin/<str:group_name>/group_upload/', views.group_upload, name='group_upload'),
+               path('groupjoin/<str:group_name>/add_member/', views.add_member, name='add_member'),
+               path('leave_group/', views.leave_group, name='leave_group'),
                ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

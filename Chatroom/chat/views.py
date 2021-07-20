@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.contrib.auth.models import User, auth
-from .models import Thread, Profile, Photo, GroupThread
+from .models import Thread, Profile, Photo, GroupThread, Group, GroupMember
 import re, json
 from django.http import HttpResponse, HttpResponseRedirect
 #import requests
@@ -77,6 +77,10 @@ def home(request):
         chat_type = request.POST.get("type")
         if chat_type == "Go to Chatroom":
             return HttpResponseRedirect('room')
+        elif chat_type == "Join or Create Group":
+            return redirect('group')
+        elif chat_type == "Go to Group":
+            return redirect('groupjoin')
         else:
             return redirect('personal')
 
@@ -139,6 +143,65 @@ def personalchat(request, username):
             return render(request, 'chat/personalchat.html', {'username': username})
 
 
+def group(request):
+    if request.method == "GET":
+        return render(request, "chat/group.html")
+    else:
+        option_type = request.POST.get("type")
+        username = request.user.username
+        user = User.objects.get(username=username)
+        if option_type == "Join Group":
+            group_name = request.POST.get("Group_name_1")
+            try:
+                group = Group.objects.get(group_name=group_name)
+                try:
+                    group_member = GroupMember.objects.get(group=group, user=user)
+                    print(group_member)
+                    return render(request, 'chat/group.html', {'message': "You are already a part of group."})
+                except GroupMember.DoesNotExist:
+                    group_member = GroupMember(group=group, user=user)
+                    group_member.save()
+                    return render(request, 'chat/group.html', {'message': 'You have been added to the group successfully.'})
+            except Group.DoesNotExist:
+                return render(request, 'chat/group.html', {'message': 'No such group found.'})
+        else:
+            group_name = request.POST.get("Group_name_2")
+            try:
+                group = Group.objects.get(group_name=group_name)
+                return render(request, 'chat/group.html', {'message': 'The group with the entered name already exists.'})
+            except Group.DoesNotExist:
+                group = Group(group_name=group_name)
+                group.save()
+                group_member = GroupMember(group=group, user=user)
+                group_member.save()
+                return render(request, 'chat/group.html', {'message': 'Group has been created.'})
+
+
+def groupjoin(request):
+    if request.method == 'GET':
+        return render(request, 'chat/groupjoin.html')
+    else:
+        group_name = request.POST.get("group_name")
+        user = User.objects.get(username=request.user.username)
+        try:
+            group = Group.objects.get(group_name=group_name)
+            try:
+                group_member = GroupMember.objects.get(group=group, user=user)
+                return HttpResponseRedirect(group_name)
+            except GroupMember.DoesNotExist:
+                return render(request, 'chat/groupjoin.html', {'message': "You are not added to the group."})
+        except Group.DoesNotExist:
+            return render(request, 'chat/groupjoin.html', {'message': "No such group exists."})
+
+
+def groupchat(request, group_name):
+    try:
+        gthread = GroupThread.objects.get(name=group_name)
+        return render(request, 'chat/groupchat.html', {'gthread': gthread.chat, 'group_name': group_name})
+    except GroupThread.DoesNotExist:
+        return render(request, 'chat/groupchat.html', {'group_name': group_name})
+
+
 def upload(request, username):
     if request.method == 'POST':
         if request.is_ajax():
@@ -149,3 +212,46 @@ def upload(request, username):
                 'url': uploaded_image.img.url,
             }
     return JsonResponse(response_data)
+
+
+def group_upload(request, group_name):
+    if request.method == 'POST':
+        if request.is_ajax():
+            image = request.FILES.get('img')
+            uploaded_image = Photo(img=image)
+            uploaded_image.save()
+            response_data = {
+                'url': uploaded_image.img.url,
+            }
+    return JsonResponse(response_data)
+
+
+def add_member(request, group_name):
+    if request.method == 'GET':
+        group = Group.objects.get(group_name=group_name)
+        try:
+            user = User.objects.get(username=request.GET.get('username'))
+            group_member = GroupMember.objects.get(group=group, user=user)
+            data = {'message': 'The user is already a part of the group.'}
+        except User.DoesNotExist:
+            data = {'message': 'There is no user with given username.'}
+        except GroupMember.DoesNotExist:
+            group_member = GroupMember(user=user, group=group)
+            group_member.save()
+            data = {'message': 'The user has been added to the group successfully.'}
+
+        return JsonResponse(data)
+
+
+def leave_group(request):
+    if request.method == "POST":
+        username = request.user.username
+        user = User.objects.get(username=username)
+        group_name = request.POST.get("group_name")
+        group = Group.objects.get(group_name=group_name)
+        groupmember = GroupMember.objects.get(group=group, user=user)
+        groupmember.delete()
+        return render(request, 'chat/Home.html', {'message': "You left the group successfully."})
+
+
+
