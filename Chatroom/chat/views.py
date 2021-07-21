@@ -70,7 +70,15 @@ def home(request):
         if request.user.is_authenticated:
             username = request.user.username
             user = User.objects.get(username=username)
-            return render(request, 'chat/Home.html', {'user': user})
+            groups = GroupMember.objects.filter(user=user)
+            p = ''
+            for i in range(0, len(groups)):
+                group = Group.objects.get(group_name=groups[i])
+                last_active_time = (GroupMember.objects.get(group=group, user=user)).last_active_time
+                last_message_time = group.last_message_time
+                if (last_active_time < last_message_time):
+                    p += "There are unread messages in "+str(group.group_name)+" .\n"
+            return render(request, 'chat/Home.html', {'user': user, 'notifications': p})
         else:
             return redirect('signin')
     else:

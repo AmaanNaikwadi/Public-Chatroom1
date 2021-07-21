@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User, auth
+from datetime import datetime
 
 
 class Profile(models.Model):
@@ -35,6 +36,7 @@ class GroupThread(models.Model):
 
 class Group(models.Model):
     group_name = models.CharField(max_length=50)
+    last_message_time = models.DateTimeField(default=datetime.now, blank=True)
 
     def __str__(self):
         return self.group_name
@@ -43,6 +45,8 @@ class Group(models.Model):
 class GroupMember(models.Model):
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    last_active_time = models.DateTimeField(default=datetime.now, blank=True)
 
     def __str__(self):
-        return self.user.username
+        return self.group.group_name
+

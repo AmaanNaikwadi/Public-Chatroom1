@@ -1,6 +1,6 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.contrib.auth.models import User, auth
-from chat.models import Thread, GroupThread
+from chat.models import Thread, GroupThread, Group, GroupMember
 from datetime import datetime, timedelta
 import json
 import os
@@ -108,6 +108,13 @@ class GroupChatConsumer(AsyncWebsocketConsumer):
         await self.accept()
 
     async def disconnect(self, close_code):
+        group = Group.objects.get(group_name=self.room_name)
+        me = self.scope['user']
+
+        group_member = GroupMember.objects.get(user=me, group=group)
+        group_member.last_active_time = datetime.now()
+        group_member.save()
+
         await self.channel_layer.group_discard(
             self.room_group_name,
             self.channel_name
@@ -120,6 +127,10 @@ class GroupChatConsumer(AsyncWebsocketConsumer):
         image = text_data_json['image']
 
         gthread = GroupThread.objects.get(name=self.room_name)
+        group = Group.objects.get(group_name=self.room_name)
+        group.last_message_time = datetime.now()
+        group.save()
+
         now = datetime.now()
         current_time = now.strftime("%H:%M:%S")
         gthread.chat += '(' + str(current_time) + ')' + str(username) + ' : ' + str(message) + '\n'
