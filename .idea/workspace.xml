@@ -3,55 +3,13 @@
   <component name="ChangeListManager">
     <list default="true" id="97a6ee52-2065-43f2-a221-a72259eb0efe" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Chatroom/chat/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/Chatroom/chat/admin.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Chatroom/chat/consumers.py" beforeDir="false" afterPath="$PROJECT_DIR$/Chatroom/chat/consumers.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Chatroom/chat/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/Chatroom/chat/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Chatroom/chat/routing.py" beforeDir="false" afterPath="$PROJECT_DIR$/Chatroom/chat/routing.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Chatroom/chat/templates/chat/Home.html" beforeDir="false" afterPath="$PROJECT_DIR$/Chatroom/chat/templates/chat/Home.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Chatroom/chat/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/Chatroom/chat/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Chatroom/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/Chatroom/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chatroom/static/images/Annotation_2021-07-15_120146.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chatroom/static/images/Annotation_2021-07-15_120146_794QLMq.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chatroom/static/images/Annotation_2021-07-15_120146_QKZpZYC.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chatroom/static/images/Annotation_2021-07-15_120146_Wv5bwIX.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chatroom/static/images/Annotation_2021-07-15_120146_YcHmML2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chatroom/static/images/Annotation_2021-07-15_120146_aZQO7KD.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chatroom/static/images/adhar_card.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chatroom/static/images/adhar_card_1DxUs5d.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chatroom/static/images/adhar_card_28EbLaH.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chatroom/static/images/adhar_card_4dUy2Y0.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chatroom/static/images/adhar_card_5ouGFbG.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chatroom/static/images/adhar_card_8xMu4HW.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chatroom/static/images/adhar_card_A0ZTeDk.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chatroom/static/images/adhar_card_GjSNA3G.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chatroom/static/images/adhar_card_Hcnm477.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chatroom/static/images/adhar_card_IgkcKJb.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chatroom/static/images/adhar_card_PhCgVIX.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chatroom/static/images/adhar_card_TgSGBCL.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chatroom/static/images/adhar_card_Tv7bkHu.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chatroom/static/images/adhar_card_TxRaCd9.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chatroom/static/images/adhar_card_UD0EgP2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chatroom/static/images/adhar_card_YmfGByj.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chatroom/static/images/adhar_card_aPQNkwT.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chatroom/static/images/adhar_card_bdLkWw7.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chatroom/static/images/adhar_card_fUkAH6E.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chatroom/static/images/adhar_card_jcInKE2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chatroom/static/images/adhar_card_jnaVG7F.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chatroom/static/images/adhar_card_kBYFwqt.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chatroom/static/images/adhar_card_lLgoWfg.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chatroom/static/images/adhar_card_opzJBEm.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chatroom/static/images/adhar_card_rMS9ecH.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chatroom/static/images/adhar_card_u93dEq2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chatroom/static/images/adhar_card_wL6l7Jw.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chatroom/static/images/adhar_card_wbn950c.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chatroom/static/images/adhar_card_xDUTPxe.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chatroom/static/images/amaan_EVOkhhn.jpeg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chatroom/static/images/amaan_htd5smv.jpeg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chatroom/static/images/amaan_qbQb4Hp.jpeg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chatroom/static/images/amaan_tdPuuS6.jpeg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chatroom/static/images/amaan_ydLN1Wv.jpeg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chatroom/static/images/amaan_yr4GuPz.jpeg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chatroom/static/images/depositphotos_26692927-stock-photo-orange-question.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chatroom/static/images/depositphotos_26692927-stock-photo-orange-question_hqBCYit.jpg" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />

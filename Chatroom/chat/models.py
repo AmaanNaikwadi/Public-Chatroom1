@@ -25,21 +25,21 @@ class Thread(models.Model):
         return str(self.user1)+" "+str(self.user2)
 
 
-class GroupThread(models.Model):
-
-    name = models.CharField(max_length=50)
-    chat = models.TextField()
-
-    def __str__(self):
-        return self.name
-
-
 class Group(models.Model):
     group_name = models.CharField(max_length=50)
     last_message_time = models.DateTimeField(default=datetime.now, blank=True)
 
     def __str__(self):
         return self.group_name
+
+
+class GroupThread(models.Model):
+
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    chat = models.TextField()
+
+    def __str__(self):
+        return self.group.group_name
 
 
 class GroupMember(models.Model):
@@ -50,3 +50,11 @@ class GroupMember(models.Model):
     def __str__(self):
         return self.group.group_name
 
+
+class Notification(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    sender = models.CharField(max_length=100)
+    read = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.sender

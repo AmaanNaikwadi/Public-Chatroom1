@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.contrib.auth.models import User, auth
-from .models import Thread, Profile, Photo, GroupThread, Group, GroupMember
+from .models import Thread, Profile, Photo, GroupThread, Group, GroupMember, Notification
 import re, json
 from django.http import HttpResponse, HttpResponseRedirect
 #import requests
@@ -72,12 +72,23 @@ def home(request):
             user = User.objects.get(username=username)
             groups = GroupMember.objects.filter(user=user)
             p = ''
+            count = 1
+
             for i in range(0, len(groups)):
                 group = Group.objects.get(group_name=groups[i])
                 last_active_time = (GroupMember.objects.get(group=group, user=user)).last_active_time
                 last_message_time = group.last_message_time
                 if (last_active_time < last_message_time):
-                    p += "There are unread messages in "+str(group.group_name)+" .\n"
+                    p += str(count)+". There are unread messages in "+str(group.group_name)+" group.\n"
+                    count += 1
+            try:
+                notification = Notification.objects.filter(user=user, read=1)
+                for i in range (0, len(notification)):
+                    p += str(count)+". There are unread messages from "+str(notification[0])+" .\n"
+                    count += 1
+            except Notification.DoesNotExist:
+                pass
+
             return render(request, 'chat/Home.html', {'user': user, 'notifications': p})
         else:
             return redirect('signin')
@@ -204,7 +215,8 @@ def groupjoin(request):
 
 def groupchat(request, group_name):
     try:
-        gthread = GroupThread.objects.get(name=group_name)
+        group = Group.objects.get(group_name=group_name)
+        gthread = GroupThread.objects.get(group=group)
         return render(request, 'chat/groupchat.html', {'gthread': gthread.chat, 'group_name': group_name})
     except GroupThread.DoesNotExist:
         return render(request, 'chat/groupchat.html', {'group_name': group_name})
