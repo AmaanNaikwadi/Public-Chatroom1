@@ -214,6 +214,11 @@ def groupchat(request, group_name):
     try:
         group = Group.objects.get(group_name=group_name)
         gmessage = GroupMessage.objects.filter(group=group).order_by('time')
+        for i in gmessage:
+            if i.sender == User.objects.get(username=request.user.username):
+                i.ui_align = 1
+            else:
+                i.ui_align = 0
         return render(request, 'chat/groupchat.html', {'gmessage': gmessage, 'group_name': group_name})
     except GroupMessage.DoesNotExist:
         return render(request, 'chat/groupchat.html', {'group_name': group_name})

@@ -23,7 +23,7 @@
                         {% if gmessage %}
                             <ul style="list-style-type:none">
                                 {% for i in gmessage %}
-                                    {% if i.sender == request.user.username %}
+                                    {% if i.ui_align == 1 %}
                                         {% if i.image == 0 %}
                                             <li align="right">{{i.sender}}: {{ i.message }}</li>
                                         {% else %}
@@ -89,6 +89,16 @@
             '/'
         );
         //The 'username' used in above url is the one to whom we have to send message.
+
+        function check(name) {
+            console.log("Call Received");
+            if (name == login_username) {
+                return right;
+            }
+            else {
+                return left;
+            }
+        }
 
         document.querySelector('#submit').onclick = function(e) {
             const messageInputDom = document.querySelector('#input');

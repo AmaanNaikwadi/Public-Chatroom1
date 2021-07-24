@@ -57,6 +57,7 @@ class GroupMessage(models.Model):
     message = models.TextField()
     image = models.IntegerField(default=0)
     time = models.TimeField(default=datetime.now, blank=True)
+    ui_align = models.IntegerField(default=0)
 
     def __str__(self):
         return self.message
