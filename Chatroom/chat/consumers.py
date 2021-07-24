@@ -1,6 +1,6 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.contrib.auth.models import User, auth
-from chat.models import Thread, Group, GroupMember, Notification, GroupMessage
+from chat.models import Thread, Group, GroupMember, Notification, GroupMessage, ThreadMessage
 from datetime import datetime, timedelta
 import json
 import os
@@ -54,6 +54,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
         username = text_data_json['username']
         message = text_data_json['message']
         image = text_data_json['image']
+        now = datetime.now()
+        current_time = now.strftime("%H:%M:%S")
 
         me = self.scope['user']
         other_username = self.scope['url_route']['kwargs']['username']
@@ -64,6 +66,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
         except Thread.DoesNotExist:
             thread = Thread.objects.get(user1=other_username, user2=me.username)
 
+        thread_message = ThreadMessage(thread=thread, sender=username, message=str(message)+" ("+str(current_time)+")", image=image, time=current_time)
+        thread_message.save()
+
         if len(self.channel_layer.groups.get(self.room_group_name, {}).items()) == 1:
             try:
                 notification = Notification.objects.get(user=other_user, sender=me.username)
@@ -72,11 +77,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
             except Notification.DoesNotExist:
                 notification = Notification(user=other_user, sender=me.username, read=1)
                 notification.save()
-
-        now = datetime.now()
-        current_time = now.strftime("%H:%M:%S")
-        thread.chat += '(' + str(current_time) + ')' + str(username) + ' : ' + str(message) + '\n'
-        thread.save()
 
         await self.channel_layer.group_send(
             self.room_group_name,

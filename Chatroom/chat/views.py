@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.contrib.auth.models import User, auth
-from .models import Thread, Profile, Photo, Group, GroupMember, Notification, GroupMessage
+from .models import Thread, Profile, Photo, Group, GroupMember, Notification, GroupMessage, ThreadMessage
 import re, json
 from django.http import HttpResponse, HttpResponseRedirect
 #import requests
@@ -150,13 +150,42 @@ def room(request, room_name):
 def personalchat(request, username):
     try:
         thread = Thread.objects.get(user1=request.user.username, user2=username)
-        return render(request, 'chat/personalchat.html', {'thread': thread.chat, 'username': username})
+        thread_message = ThreadMessage.objects.filter(thread=thread).order_by('time')
+        for i in thread_message:
+            if i.sender == request.user.username:
+                i.ui_align = 1
+            else:
+                i.ui_align = 0
+        return render(request, 'chat/personalchat.html', {'thread_message': thread_message, 'username': username})
     except Thread.DoesNotExist:
         try:
             thread = Thread.objects.get(user1=username, user2=request.user.username)
-            return render(request, 'chat/personalchat.html', {'thread': thread.chat, 'username': username})
+            thread_message = ThreadMessage.objects.filter(thread=thread).order_by('time')
+            for i in thread_message:
+                if i.sender == request.user.username:
+                    i.ui_align = 1
+                else:
+                    i.ui_align = 0
+            return render(request, 'chat/personalchat.html', {'thread_message': thread_message, 'username': username})
         except Thread.DoesNotExist:
             return render(request, 'chat/personalchat.html', {'username': username})
+
+
+def delete_message_personal(request, username):
+    if request.method == "GET":
+        try:
+            thread = Thread.objects.get(user1=request.user.username, user2=username)
+        except Thread.DoesNotExist:
+            thread = Thread.objects.get(user1=username, user2=request.user.username)
+        try:
+            message = request.GET.get("message")
+            receipt = ThreadMessage.objects.get(thread=thread, message=message, sender=User.objects.get(username=request.user.username))
+            receipt.message = "This message was deleted"
+            receipt.save()
+            data = {'verdict': 'Message deleted successfully.'}
+        except ThreadMessage.DoesNotExist:
+            data = {'verdict': 'You are not the sender of the message.'}
+        return JsonResponse(data)
 
 
 def group(request):

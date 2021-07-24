@@ -90,16 +90,6 @@
         );
         //The 'username' used in above url is the one to whom we have to send message.
 
-        function check(name) {
-            console.log("Call Received");
-            if (name == login_username) {
-                return right;
-            }
-            else {
-                return left;
-            }
-        }
-
         document.querySelector('#submit').onclick = function(e) {
             const messageInputDom = document.querySelector('#input');
             const message = messageInputDom.value;

@@ -20,10 +20,24 @@
                     <div class="form-group">
                         <label for="exampleFormControlTextarea1" class="h4 pt-5">{{username}}</label>
                         <p id = 'status'></p>
-                        {% if thread %}
-                        <pre style="align: left; font-family: Arial; font-size: 15px;">
-                        {{ thread }}
-                        </pre>
+                        {% if thread_message %}
+                            <ul style="list-style-type:none">
+                                {% for i in thread_message %}
+                                    {% if i.ui_align == 1 %}
+                                        {% if i.image == 0 %}
+                                            <li align="right">{{i.sender}}: {{ i.message }}</li>
+                                        {% else %}
+                                            <li align="right">{{i.sender}}: <img src={{i.message}} height="300" width="300"></li>
+                                        {% endif %}
+                                    {% else %}
+                                        {% if i.image == 0 %}
+                                            <li align="left">{{i.sender}}: {{ i.message }}</li>
+                                        {% else %}
+                                            <li align="left">{{i.sender}}: <img src={{i.message}} height="300" width="300"></li>
+                                        {% endif %}
+                                    {%endif %}
+                                {% endfor %}
+                            </ul>
                         {% endif %}
                         <ul style="list-style-type:none" id = "message-list">
                         </ul>
@@ -38,7 +52,12 @@
                     {% csrf_token %}
                     <input type="file" name="img" id="img" autocomplete="off">
                     <input type="submit" name="submit2" id="submit2" value="Submit">
-                </form>
+                </form><br><br>
+                <form method="POST" id="delete_message">
+                    {% csrf_token %}
+                    <input type="text" name="message" id="message" autocomplete="off">
+                    <input type="submit" name="submit4" id="submit4" value="Delete Message">
+                </form><br><br>
             </div>
         </div>
     </div>
@@ -75,8 +94,6 @@
         //The 'login_username' used above is assigned in line 31. The 'login_username' is used to record which user is sending the message so we can append it while displaying.
         //The 'username' is JSON.stringify is used to send it to chat socket
 
-
-
         $(document).ready(function() {
             $('#ajax').submit(function(e) {
                 e.preventDefault();
@@ -101,6 +118,26 @@
             });
            });
 
+        $(document).ready(function() {
+            $('#delete_message').submit(function(e) {
+                e.preventDefault();
+                const message = document.querySelector('#message');
+                const message_to_delete = message.value;
+
+                $.ajax({
+                   url: 'delete_message_personal/',
+                   method: 'GET',
+                   dataType: 'json',
+                   data: {
+                    'message': message_to_delete
+                   },
+                   success: function(data, message) {
+                       location.reload();
+                    }
+                });
+                message.value = '';
+            });
+           });
 
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
@@ -110,12 +147,12 @@
             var li = document.createElement('li');
             if (data.image == 0) {
                 if (data.username == login_username) {
-                    li.append(document.createTextNode('('+data.time+') '+data.username + ' : ' + data.message + '\n'))
+                    li.append(document.createTextNode(data.username + ': ' + data.message + ' (' + data.time + ')'))
                     li.style.textAlign = "right";
                     ul.append(li);
                 }
                 else {
-                    li.append(document.createTextNode('('+data.time+') '+data.username + ' : ' + data.message + '\n'))
+                    li.append(document.createTextNode(data.username + ': ' + data.message + ' (' + data.time + ')'))
                     li.style.textAlign = "left";
                     ul.append(li);
                 }
