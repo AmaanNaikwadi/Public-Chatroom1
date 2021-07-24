@@ -263,6 +263,20 @@ def add_member(request, group_name):
         return JsonResponse(data)
 
 
+def delete_message(request, group_name):
+    if request.method == "GET":
+        group = Group.objects.get(group_name=group_name)
+        try:
+            message = request.GET.get("message")
+            receipt = GroupMessage.objects.get(group=group, message=message, sender=User.objects.get(username=request.user.username))
+            receipt.message = "This message was deleted"
+            receipt.save()
+            data = {'verdict': 'Message deleted successfully.'}
+        except GroupMessage.DoesNotExist:
+            data = {'verdict': 'You are not the sender of the message.'}
+        return JsonResponse(data)
+
+
 def leave_group(request):
     if request.method == "POST":
         username = request.user.username

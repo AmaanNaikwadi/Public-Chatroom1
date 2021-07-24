@@ -17,7 +17,7 @@ urlpatterns = [path('', views.signup, name='signup'),
                path('groupjoin/', views.groupjoin, name='groupjoin'),
                path('groupjoin/<str:group_name>/', views.groupchat, name='groupchat'),
                path('groupjoin/<str:group_name>/group_upload/', views.group_upload, name='group_upload'),
-               path('groupjoin/<str:group_name>/add_member/', views.add_member, name='add_member'),
+               path('groupjoin/<str:group_name>/delete_message/', views.delete_message, name='delete_message'),
                path('leave_group/', views.leave_group, name='leave_group'),
                ]
 

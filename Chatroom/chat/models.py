@@ -59,4 +59,4 @@ class GroupMessage(models.Model):
     time = models.TimeField(default=datetime.now, blank=True)
 
     def __str__(self):
-        return self.sender.username
+        return self.message

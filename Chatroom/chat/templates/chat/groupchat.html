@@ -59,6 +59,11 @@
                     <input type="submit" name="submit3" id="submit3" value="Add Member">
                     <div id='message1'></div>
                 </form><br><br>
+                <form method="POST" id="delete_message">
+                    {% csrf_token %}
+                    <input type="text" name="message" id="message" autocomplete="off">
+                    <input type="submit" name="submit4" id="submit4" value="Delete Message">
+                </form><br><br>
                 <form method = "POST" action = '{% url "leave_group" %}'>
                     {% csrf_token %}
                     <button type="submit" name="group_name" value={{group_name}} >Leave Group</button><br><br>
@@ -122,7 +127,6 @@
                     }
                 });
             });
-
            });
 
 
@@ -147,7 +151,28 @@
                 });
                 username_to_add.value = '';
             });
+           });
 
+
+           $(document).ready(function() {
+            $('#delete_message').submit(function(e) {
+                e.preventDefault();
+                const message = document.querySelector('#message');
+                const message_to_delete = message.value;
+
+                $.ajax({
+                   url: 'delete_message/',
+                   method: 'GET',
+                   dataType: 'json',
+                   data: {
+                    'message': message_to_delete
+                   },
+                   success: function(data, message) {
+                       location.reload();
+                    }
+                });
+                message.value = '';
+            });
            });
 
 
