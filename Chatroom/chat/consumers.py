@@ -196,10 +196,6 @@ class ChatRoomConsumer(AsyncWebsocketConsumer):
         message = text_data_json['message']
         username = text_data_json['username']
 
-        gthread = GroupThread.objects.get(name=self.room_name)
-        gthread.chat += str(username) + ' : ' + str(message) + '\n'
-        gthread.save()
-
         await self.channel_layer.group_send(
             self.room_group_name,
             {

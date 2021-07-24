@@ -63,7 +63,8 @@
                     {% csrf_token %}
                     <input type="text" name="message" id="message" autocomplete="off">
                     <input type="submit" name="submit4" id="submit4" value="Delete Message">
-                </form><br><br>
+                </form>
+                <div id='message2'><br><br>
                 <form method = "POST" action = '{% url "leave_group" %}'>
                     {% csrf_token %}
                     <button type="submit" name="group_name" value={{group_name}} >Leave Group</button><br><br>
@@ -168,7 +169,12 @@
                     'message': message_to_delete
                    },
                    success: function(data, message) {
-                       location.reload();
+                        if (data.verdict_fail) {
+                            $('#message2').html("<h10 style='color:red;'>Only the sender of the message can delete it.</h10>");
+                        }
+                        else {
+                             location.reload();
+                        }
                     }
                 });
                 message.value = '';

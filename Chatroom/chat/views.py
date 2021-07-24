@@ -184,7 +184,7 @@ def delete_message_personal(request, username):
             receipt.save()
             data = {'verdict': 'Message deleted successfully.'}
         except ThreadMessage.DoesNotExist:
-            data = {'verdict': 'You are not the sender of the message.'}
+            data = {'verdict_fail': 'You are not the sender of the message.'}
         return JsonResponse(data)
 
 
@@ -304,7 +304,7 @@ def delete_message(request, group_name):
             receipt.save()
             data = {'verdict': 'Message deleted successfully.'}
         except GroupMessage.DoesNotExist:
-            data = {'verdict': 'You are not the sender of the message.'}
+            data = {'verdict_fail': 'You are not the sender of the message.'}
         return JsonResponse(data)
 
 
