@@ -33,15 +33,6 @@ class Group(models.Model):
         return self.group_name
 
 
-class GroupThread(models.Model):
-
-    group = models.ForeignKey(Group, on_delete=models.CASCADE)
-    chat = models.TextField()
-
-    def __str__(self):
-        return self.group.group_name
-
-
 class GroupMember(models.Model):
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -58,3 +49,14 @@ class Notification(models.Model):
 
     def __str__(self):
         return self.sender
+
+
+class GroupMessage(models.Model):
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    sender = models.ForeignKey(User, on_delete=models.CASCADE)
+    message = models.TextField()
+    image = models.IntegerField(default=0)
+    time = models.TimeField(default=datetime.now, blank=True)
+
+    def __str__(self):
+        return self.sender.username

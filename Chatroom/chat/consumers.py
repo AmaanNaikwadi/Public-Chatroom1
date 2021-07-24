@@ -1,6 +1,6 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.contrib.auth.models import User, auth
-from chat.models import Thread, GroupThread, Group, GroupMember, Notification
+from chat.models import Thread, Group, GroupMember, Notification, GroupMessage
 from datetime import datetime, timedelta
 import json
 import os
@@ -111,14 +111,6 @@ class GroupChatConsumer(AsyncWebsocketConsumer):
         self.room_name = self.scope['url_route']['kwargs']['group_name']
         self.room_group_name = 'chat_%s' % self.room_name
 
-        group = Group.objects.get(group_name=self.room_name)
-
-        try:
-            gthread = GroupThread.objects.get(group=group)
-        except GroupThread.DoesNotExist:
-            gthread = GroupThread(group=group)
-            gthread.save()
-
         await self.channel_layer.group_add(
             self.room_group_name,
             self.channel_name,
@@ -144,17 +136,17 @@ class GroupChatConsumer(AsyncWebsocketConsumer):
         message = text_data_json['message']
         username = text_data_json['username']
         image = text_data_json['image']
+        now = datetime.now()
+        current_time = now.strftime("%H:%M:%S")
+
+        group = Group.objects.get(group_name=self.room_name)
+        sender = User.objects.get(username=username)
+        gmessage = GroupMessage(group=group, sender=sender, message=str(message)+" ("+str(current_time)+")", time=current_time, image=image)
+        gmessage.save()
 
         group = Group.objects.get(group_name=self.room_name)
         group.last_message_time = datetime.now()
         group.save()
-
-        gthread = GroupThread.objects.get(group=group)
-
-        now = datetime.now()
-        current_time = now.strftime("%H:%M:%S")
-        gthread.chat += '(' + str(current_time) + ')' + str(username) + ' : ' + str(message) + '\n'
-        gthread.save()
 
         await self.channel_layer.group_send(
             self.room_group_name,

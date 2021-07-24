@@ -3,8 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="97a6ee52-2065-43f2-a221-a72259eb0efe" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chatroom/chat/routing.py" beforeDir="false" afterPath="$PROJECT_DIR$/Chatroom/chat/routing.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chatroom/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/Chatroom/db.sqlite3" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />

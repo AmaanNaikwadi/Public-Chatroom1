@@ -20,10 +20,24 @@
                     <div class="form-group">
                         <label for="exampleFormControlTextarea1" class="h4 pt-5">{{group_name}}</label>
                         <p id = 'status'></p>
-                        {% if gthread %}
-                        <pre style="align: left; font-family: Arial; font-size: 15px;">
-                        {{ gthread }}
-                        </pre>
+                        {% if gmessage %}
+                            <ul style="list-style-type:none">
+                                {% for i in gmessage %}
+                                    {% if i.sender == request.user.username %}
+                                        {% if i.image == 0 %}
+                                            <li align="right">{{i.sender}}: {{ i.message }}</li>
+                                        {% else %}
+                                            <li align="right">{{i.sender}}: <img src={{i.message}} height="300" width="300"></li>
+                                        {% endif %}
+                                    {% else %}
+                                        {% if i.image == 0 %}
+                                            <li align="left">{{i.sender}}: {{ i.message }}</li>
+                                        {% else %}
+                                            <li align="left">{{i.sender}}: <img src={{i.message}} height="300" width="300"></li>
+                                        {% endif %}
+                                    {%endif %}
+                                {% endfor %}
+                            </ul>
                         {% endif %}
                         <ul style="list-style-type:none" id = "message-list">
                         </ul>
@@ -61,7 +75,6 @@
         const login_username = JSON.parse(document.getElementById('login_username').textContent);
         const group_name = JSON.parse(document.getElementById('group_name').textContent);
         //The 'username' above is recorded for the url.
-
 
          const chatSocket = new WebSocket (
             'ws://' +
@@ -145,12 +158,12 @@
             var li = document.createElement('li');
             if (data.image == 0) {
                 if (data.username == login_username) {
-                    li.append(document.createTextNode('('+data.time+') '+data.username + ' : ' + data.message + '\n'))
+                    li.append(document.createTextNode(data.username + ': ' + data.message + ' (' + data.time + ')'))
                     li.style.textAlign = "right";
                     ul.append(li);
                 }
                 else {
-                    li.append(document.createTextNode('('+data.time+') '+data.username + ' : ' + data.message + '\n'))
+                    li.append(document.createTextNode(data.username + ': ' + data.message + ' (' + data.time + ')'))
                     li.style.textAlign = "left";
                     ul.append(li);
                 }

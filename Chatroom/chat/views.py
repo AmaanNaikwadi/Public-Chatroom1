@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.contrib.auth.models import User, auth
-from .models import Thread, Profile, Photo, GroupThread, Group, GroupMember, Notification
+from .models import Thread, Profile, Photo, Group, GroupMember, Notification, GroupMessage
 import re, json
 from django.http import HttpResponse, HttpResponseRedirect
 #import requests
@@ -216,9 +216,9 @@ def groupjoin(request):
 def groupchat(request, group_name):
     try:
         group = Group.objects.get(group_name=group_name)
-        gthread = GroupThread.objects.get(group=group)
-        return render(request, 'chat/groupchat.html', {'gthread': gthread.chat, 'group_name': group_name})
-    except GroupThread.DoesNotExist:
+        gmessage = GroupMessage.objects.filter(group=group).order_by('time')
+        return render(request, 'chat/groupchat.html', {'gmessage': gmessage, 'group_name': group_name})
+    except GroupMessage.DoesNotExist:
         return render(request, 'chat/groupchat.html', {'group_name': group_name})
 
 
