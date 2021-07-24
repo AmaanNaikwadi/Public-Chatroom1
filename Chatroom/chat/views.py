@@ -143,11 +143,8 @@ def personal(request):
 
 
 def room(request, room_name):
-    try:
-        gthread = GroupThread.objects.get(name=room_name)
-        return render(request, 'chat/chatroom.html', {'thread': gthread.chat, 'room_name': room_name})
-    except GroupThread.DoesNotExist:
-        return render(request, 'chat/chatroom.html', {'room_name': room_name})
+    return render(request, 'chat/chatroom.html', {'room_name': room_name})
+
 
 
 def personalchat(request, username):
